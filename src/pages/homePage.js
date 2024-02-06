@@ -42,29 +42,7 @@ function Home({user}) {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <header className="App-header">
-                        <h1 className="mb-4 text-center">Set Your Goal</h1>
-                        <form>
-                            <div className="mb-3">
-                                <input className="form-control" ref={inputTitle} placeholder="Title" />
-                            </div>
-                            <div className="mb-3">
-                                <input className="form-control" ref={inputType} placeholder="Type" />
-                            </div>
-                            <div className="mb-3">
-                                <input className="form-control" ref={inputStartAt} placeholder="Ex: 2024-02-06 13:15" />
-                            </div>
-                            <div className="mb-3">
-                                <input className="form-control" ref={inputEndAt} placeholder="Ex: 2024-02-06 13:25" />
-                            </div>
-                            <div className="mb-3">
-                                <input className="form-control" ref={inputGoalAmount} placeholder="Goal Amount" />
-                            </div>
-                            <div className="mb-3">
-                                <input className="form-control" ref={inputGoalUnit} placeholder="Goal Unit" />
-                            </div>
-                            <button type="button" className="btn btn-primary mb-3 ms-auto" onClick={handleCreateGoal}>Add Goal</button>
-                        </form>
-                        <button type="button" className="btn btn-danger" onClick={logout}>Logout</button>
+                        <h1 className="mb-4 text-center">Welcome To Zero Fitness</h1>
                     </header>
                 </div>
             </div>
