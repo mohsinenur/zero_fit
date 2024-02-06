@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../../lib/helper/supabaseClient';
 import { Link } from 'react-router-dom';
 import '../../assets/sidebar.css';
 import logo from '../../assets/images/logo.png';
 
 const Sidebar = () => {
+    const [showMenu, setShowMenu] = useState(false);
+    
+    const toggleMenu = () => {
+        setShowMenu(!showMenu);
+    };
+
     const logout = async () => {
         await supabase.auth.signOut();
     };
 
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${showMenu ? 'show-menu' : ''}`}>
             <div className="logo-container">
                 <img src={logo} alt="Logo" className="logo" />
             </div>
@@ -23,6 +29,9 @@ const Sidebar = () => {
                 <hr />
                 <li onClick={logout}>Logout</li>
             </ul>
+            {/* <div className="menu-button" onClick={toggleMenu}>
+                <i className="fas fa-bars">Menu</i>
+            </div> */}
         </div>
     );
 }
