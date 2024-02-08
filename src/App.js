@@ -1,67 +1,66 @@
-// import './styles.css';
-
-import React, {useEffect, useState} from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { supabase } from './lib/helper/supabaseClient';
-import {Auth} from '@supabase/auth-ui-react';
+import React, { useState, useEffect, Component, Suspense } from 'react'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Sidebar from './pages/nav/sidebar';
-import Home from './pages/homePage';
-import Goal from './pages/goalPage';
+import './scss/style.scss'
 
+import { supabase } from './helper/supabaseClient';
+import {Auth} from '@supabase/auth-ui-react';
 
+const loading = (
+  <div className="pt-3 text-center">
+    <div className="sk-spinner sk-spinner-pulse"></div>
+  </div>
+)
+
+// Containers
+const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+
+// class App extends Component {
 export default function App() {
+  // render() {
+    const [user, setUser] = useState(null);
 
-  const [user, setUser] = useState(null);
+    useEffect(()=> {
+      const session = supabase.auth.getSession();
+      setUser(session?.user);
 
-  useEffect(()=> {
-    const session = supabase.auth.getSession();
-    setUser(session?.user);
-
-    const {data: authListener} = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        switch(event){
-          case "SIGNED_IN":
-            setUser(session?.user);
-            localStorage.setItem('supabaseSession', JSON.stringify(session));
-            break;
-          
-          case "SIGNED_OUT":
-            setUser(null);
-            localStorage.removeItem('supabaseSession');
-            break;
-          
-          default:
+      const {data: authListener} = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          switch(event){
+            case "SIGNED_IN":
+              setUser(session?.user);
+              localStorage.setItem('supabaseSession', JSON.stringify(session));
+              break;
+            
+            case "SIGNED_OUT":
+              setUser(null);
+              localStorage.removeItem('supabaseSession');
+              break;
+            
+            default:
+          }
         }
+      );
+
+      const storedSession = localStorage.getItem('supabaseSession');
+      if (storedSession) {
+        setUser(JSON.parse(storedSession)?.user);
       }
-    );
 
-    const storedSession = localStorage.getItem('supabaseSession');
-    if (storedSession) {
-      setUser(JSON.parse(storedSession)?.user);
-    }
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    }
-    
-  }, [])
-
-  return (
-    <Router>
-    <div>
+      return () => {
+        authListener.subscription.unsubscribe();
+      }
+      
+    }, [])
+    return (
+      <HashRouter>
       {
         user ? (
-          <>
-          <Sidebar />
-            <div style={{ marginLeft: '250px', padding: '20px' }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/goals" element={<Goal />} />
-              </Routes>
-            </div>
-          </>
+          <Suspense fallback={loading}>
+          <Routes>
+            <Route path="*" name="Home" element={<DefaultLayout />} />
+          </Routes>
+        </Suspense>
         ) : (
           <>
             <div className="container p-5"  style={{ maxWidth: '400px' }}>
@@ -73,7 +72,7 @@ export default function App() {
                         supabaseClient={supabase}
                         appearance={{ theme: ThemeSupa }}
                         theme="dark"
-                        providers={['discord']}
+                        providers={['google']}
                     />
                   </header>
                 </div>
@@ -82,8 +81,10 @@ export default function App() {
           </>
         )
       }
-    </div>
-    </Router>
-  )
+        
+      </HashRouter>
+    )
+  // }
 }
 
+// export default App
